@@ -117,6 +117,41 @@ if not simplifileData then
   printUsage("Failed to unserialize data, did you input the correct link?")
 end
 
+-- Verify the data.
+action(1, "Verifying data.")
+local function verifyFail(reason)
+  action(3, "Verification failed.")
+  print()
+  error(reason, 0)
+end
+local function verify(thing, reason)
+  return not thing and verifyFail(reason)
+end
+
+-- Simplifile remote should generate a table
+verify(type(simplifileData) == "table", "Remote Simplifile does not create a table.")
+-- Simplifile remote should point to itself
+verify(simplifileData.remote == simplifileRemote, "Remote Simplifile does not point to itself.")
+-- Simplifile should have "files" section
+verify(type(simplifileData.files) == "table", "'.files' field is missing from remote.")
+-- Each file should contain a remote and downloaded location.
+for i = 1, #simplifileData.files do
+  verify(type(simplifileData.files[i]) == "table", string.format(".files[%d] is not a table.", i))
+  verify(type(simplifileData.files[i].remote) == "string", string.format(".files[%d] is missing field '.remote'.", i))
+  verify(type(simplifileData.files[i].location) == "string", string.format(".files[%d] is missing field '.location'.", i))
+end
+-- removed section for removed files
+if type(simplifileData.removed) ~= "table" and type(simplifileData.removed) ~= "nil" then
+  action(2, "'.removed' field is not of expected type 'table', it is of type", type(simplifileData.removed) .. ".", "It has been removed.")
+  simplifileData.removed = nil
+end
+if simplifileData.removed then
+  for i = 1, #simplifileData.removed do
+    verify(type(simplifileData.removed[i]) == "string", string.format(".removed[%d] is expected to be a string.", i))
+  end
+end
+action(1, "Verification OK.")
+
 -- clean current working directory, if needed.
 if ARGS[2] and ARGS[2]:lower() == "clean" then
   local files = fs.list(SELF_DIR)
