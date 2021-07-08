@@ -4,6 +4,7 @@ local SELF_DIR = shell.dir()
 local simplifileRemote
 
 local function printUsage(reason)
+  print()
   print("Usage: SimplifyUpdate [simplifile] [clean]")
   error(reason, 0)
 end
@@ -51,7 +52,7 @@ local function action(level, ...)
   local function createBlit(str, second)
     return string.format(second and "           %s" or "[UPDATER]: %s", str),
            string.format(
-             "04444444000%s",
+             "01111111000%s",
              string.rep(
                level == 1 and '8'
                or level == 2 and '4'
