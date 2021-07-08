@@ -5,13 +5,6 @@ local simplifileRemote
 
 local function printUsage(reason)
   print("Usage: SimplifyUpdate [simplifile] [clean]")
-  print("   OR: wget run <LINK_TO_SELF> [simplifile] [clean]")
-  print("  > SimplifyUpdate")
-  print("    - Checks the Simplifile in the current directory and updates based off that.")
-  print("  > SimplifyUpdate https://github.com/some_repo/main/Simplifile")
-  print("    - Downloads the Simplifile provided and updates/installs based on that.")
-  print("  > SimplifyUpdate _ clean")
-  print("    - Cleans the current directory, then reinstalls.")
   error(reason, 0)
 end
 
