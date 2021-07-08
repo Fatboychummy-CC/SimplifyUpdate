@@ -1,5 +1,6 @@
 {
   remote = "https://raw.githubusercontent.com/Fatboychummy-CC/SimplifyUpdate/master/Simplifile",
+  name = "SimplifyUpdate",
   files = {
     {
       remote = "https://raw.githubusercontent.com/Fatboychummy-CC/SimplifyUpdate/master/Updater.lua",
