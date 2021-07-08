@@ -67,5 +67,11 @@ end
 
 -- clean current working directory, if needed.
 if ARGS[2] and ARGS[2]:lower() == "clean" then
-  
+  local files = fs.list(SELF_DIR)
+  action(string.format("Cleaning %d files/folders in current directory.", #files))
+
+  for i = 1, #files do
+    action(string.format("Removing %s", files[i]))
+    fs.delete(files[i])
+  end
 end
