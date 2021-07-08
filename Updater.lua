@@ -130,6 +130,10 @@ end
 
 -- Simplifile remote should generate a table
 verify(type(simplifileData) == "table", "Remote Simplifile does not create a table.")
+-- Name not required, but recommended.
+if type(simplifileData.name) ~= "string" then
+  action(2, "Simplifile is missing field 'name'.")
+end
 -- Simplifile remote should point to itself
 verify(simplifileData.remote == simplifileRemote, "Remote Simplifile does not point to itself.")
 -- Simplifile should have "files" section
@@ -180,7 +184,7 @@ local urlLookup = {}
 local function count()
   local c = 0
   for _ in pairs(urlLookup) do c = c + 1 end
-  return c
+  return #simplifileData.files - c
 end
 
 local function download()
@@ -218,10 +222,11 @@ local function download()
 end
 local function display()
   while true do
-    action(2, string.format("Downloading... %d%%", count() / #simplifileData.files * 100))
+    action(1, string.format("Downloading... %d%%", count() / #simplifileData.files * 100))
     os.sleep(0.5)
   end
 end
 parallel.waitForAny(download, display)
+action(1, "Downloading... 100%")
 
-action(2, "Done.")
+action(2, string.format("Finished downloading %d files for Simplifile %s.", #simplifileData.files, simplifileData.name or "Unknown"))
