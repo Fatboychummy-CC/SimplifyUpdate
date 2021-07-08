@@ -173,3 +173,55 @@ else
     end
   end
 end
+
+-- Install
+action(1, "Writing files.")
+local urlLookup = {}
+local function count()
+  local c = 0
+  for _ in pairs(urlLookup) do c = c + 1 end
+  return c
+end
+
+local function download()
+  -- make all the http requests
+  for i = 1, #simplifileData.files do
+    local file = simplifileData.files[i]
+    urlLookup[file.remote] = file.location
+    http.request(file.remote)
+  end
+
+  while true do
+    -- wait for http response
+    local event, url, httpHandle = os.pullEvent()
+
+    if event == "http_success" and urls[url] then
+      -- if succeeded,
+      action(1, "Response for", urlLookup[url])
+      -- open the file for writing
+      local handle = io.open(fs.combine(SELF_DIR, urlLookup[url]), 'w')
+      handle:write(httpHandle.readAll()) -- write the data
+      handle:close()
+      httpHandle.close()
+
+      -- remove it from the check
+      urlLookup[url] = nil
+
+      -- check if there's still items left
+      if next(urlLookup) == nil then return end
+    elseif event == "http_failure" and urlLookup[url] then
+      action(3, "Failed to download", urlLookup[url])
+      print()
+      error("Could not download " .. urlLookup[url], 0)
+    end
+  end
+end
+local function display()
+  while true do
+    action(2, "Downloading... %d%", count() / #simplifileData.files * 100)
+    os.sleep(0.5)
+  end
+end
+parallel.waitForAny(download, display)
+
+action(2, "Done.")
