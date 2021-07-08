@@ -233,4 +233,6 @@ end
 parallel.waitForAny(download, display)
 action(0, "Downloading... 100%")
 
+print()
+
 action(2, string.format("Finished downloading %d files for Simplifile %s.", #simplifileData.files, simplifileData.name or "Unknown"))
