@@ -63,6 +63,7 @@ action(1, "Checking remote location URL validity.")
 local isValid, err = http.checkURL(simplifileRemote)
 if not isValid then
   action(3, string.format("Invalid URL: %s", err))
+  printUsage("Invalid URL given by user or Simplifile.")
 end
 
 -- clean current working directory, if needed.
