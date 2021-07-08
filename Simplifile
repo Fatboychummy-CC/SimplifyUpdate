@@ -9,5 +9,8 @@
       remote = "https://raw.githubusercontent.com/Fatboychummy-CC/SimplifyUpdate/master/Simplifile",
       location = "Simplifile"
     }
+  },
+  removed = {
+    "SomeUnneededFile"
   }
 }
