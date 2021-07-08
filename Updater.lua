@@ -91,12 +91,30 @@ else
   simplifileRemote = ARGS[1]
 end
 
-action(1, "Checking remote location URL validity.")
 -- Check validity.
+action(1, "Checking remote location URL validity.")
 local isValid, err = http.checkURL(simplifileRemote)
 if not isValid then
   action(3, string.format("Invalid URL: %s", err))
   printUsage("Invalid URL given by user or Simplifile.")
+end
+
+-- Grab all the data.
+action(1, "Downloading.")
+local h, err, hh = http.get(simplifileRemote)
+if not h then
+  action(3, "Failed to download remote.")
+  print()
+  if hh then hh.close() end
+  error(err, 0)
+end
+simplifileData = h.readAll()
+h.close()
+
+simplifileData = textutils.unserialize(simplifileData)
+if not simplifileData then
+  action(3, "Failed to unserialize data.")
+  printUsage("Failed to unserialize data, did you input the correct link?")
 end
 
 -- clean current working directory, if needed.
