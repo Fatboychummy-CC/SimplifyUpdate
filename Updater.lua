@@ -155,10 +155,21 @@ action(1, "Verification OK.")
 -- clean current working directory, if needed.
 if ARGS[2] and ARGS[2]:lower() == "clean" then
   local files = fs.list(SELF_DIR)
-  action(2, string.format("Cleaning %d files/folders in current directory.", #files))
+  if #files > 0 then
+    action(2, string.format("Cleaning %d files/folders in current directory.", #files))
 
-  for i = 1, #files do
-    action(2, string.format("Removing %s.", files[i]))
-    fs.delete(fs.combine(SELF_DIR, files[i]))
+    for i = 1, #files do
+      action(2, string.format("Removing %s.", files[i]))
+      fs.delete(fs.combine(SELF_DIR, files[i]))
+    end
+  end
+else
+  -- remove unneeded files.
+  if simplifileData.removed and #simplifileData.removed > 0 then
+    action(2, "Cleaning unneeded files.")
+    for i = 1, #simplifileData.removed do
+      action(2, string.format("Removing %s.", simplifileData.removed[i]))
+      fs.delete(fs.combine(SELF_DIR, simplifileData.removed[i]))
+    end
   end
 end
