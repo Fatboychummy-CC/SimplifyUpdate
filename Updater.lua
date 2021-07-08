@@ -14,18 +14,18 @@ local function action(level, ...)
   local lines = {}
   local maxX = term.getSize() - 11
   local line = {}
-  local new = false
+  local new = true
 
   local function insertLine(data)
     -- pad short text to ensure proper length
     -- cut long text to ensure proper length
 
     lines[#lines + 1] = string.format(string.format("%%%ds", -maxX), table.concat(data, ' ')):sub(1, maxX)
+    new = false
   end
 
   -- cut input into words, then combine them into multiple lines for printing
   for word in str:gmatch("%S+") do
-    new = false
     line[#line + 1] = word -- insert the word
 
     -- if the line is now too long
