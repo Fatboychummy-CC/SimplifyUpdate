@@ -15,6 +15,25 @@ local function printUsage(reason)
   error(reason, 0)
 end
 
+local function action(level, ...)
+  local args = table.pack(...)
+  local str = table.concat(args, ' ')
+
+  local text = string.format("[ACTION]: %s", str)
+  local fg   = string.format(
+    "0444444000%s",
+    string.rep(
+      level == 1 and '8'
+      or level == 2 and '4'
+      or level == 3 and 'e'
+      or '0'
+    )
+  )
+  local bg = string.format(string.rep(' ', 10 + #str))
+
+  term.blit(text, fg, bg)
+end
+
 -- Check arguments
 if not ARGS[1] and not fs.exists(fs.combine(SELF_DIR, "Simplifile")) then
   printUsage("No arguments given, but local Simplifile was not found.")
@@ -22,9 +41,10 @@ end
 
 -- Determine the remote location
 if not ARGS[1] then
+  action(1, "Determining remote location from local Simplifile.")
   local handle, err = io.open(fs.combine(SELF_DIR, "Simplifile"))
   if not handle then
-    print("Failed to open Simplifile for reading:")
+    action(3, "Failed to open Simplifile for reading:")
     printError(err)
     return
   end
@@ -38,10 +58,11 @@ else
   simplifileRemote = ARGS[1]
 end
 
+action(1, "Checking remote location URL validity.")
 -- Check validity.
 local isValid, err = http.checkURL(simplifileRemote)
 if not isValid then
-  printUsage(string.format("Invalid URL: %s", err))
+  action(3, string.format("Invalid URL: %s", err))
 end
 
 -- clean current working directory, if needed.
