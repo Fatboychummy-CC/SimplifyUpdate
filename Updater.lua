@@ -86,7 +86,7 @@ if not ARGS[1] then
 
   data = textutils.unserialize(data)
 
-  simplifileRemote = data.remote_location
+  simplifileRemote = data.remote
 else
   simplifileRemote = ARGS[1]
 end
