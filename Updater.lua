@@ -12,18 +12,17 @@ end
 
 local function action(level, ...)
   local args = table.pack(...)
+  if args.n == 0 then error("No arguments given!", 2) end
   local str = table.concat(args, ' ')
   local lines = {}
   local maxX = term.getSize() - 11
   local line = {}
-  local new = true
 
   local function insertLine(data)
     -- pad short text to ensure proper length
     -- cut long text to ensure proper length
 
     lines[#lines + 1] = string.format(string.format("%%%ds", -maxX), table.concat(data, ' ')):sub(1, maxX)
-    new = false
   end
 
   -- cut input into words, then combine them into multiple lines for printing
@@ -43,12 +42,9 @@ local function action(level, ...)
         word = "[removed]"
       end
       line = {word}
-      new = true
     end
   end
-  if new then
-    insertLine(line)
-  end
+  insertLine(line)
 
   local function createBlit(str, second)
     return string.format(second and "           %s" or "[UPDATER]: %s", str),
@@ -106,10 +102,10 @@ end
 -- clean current working directory, if needed.
 if ARGS[2] and ARGS[2]:lower() == "clean" then
   local files = fs.list(SELF_DIR)
-  action(string.format("Cleaning %d files/folders in current directory.", #files))
+  action(2, string.format("Cleaning %d files/folders in current directory.", #files))
 
   for i = 1, #files do
-    action(string.format("Removing %s", files[i]))
-    fs.delete(files[i])
+    action(2, string.format("Removing %s.", files[i]))
+    fs.delete(fs.combine(SELF_DIR, files[i]))
   end
 end
