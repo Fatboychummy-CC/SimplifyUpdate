@@ -11,20 +11,62 @@ end
 local function action(level, ...)
   local args = table.pack(...)
   local str = table.concat(args, ' ')
+  local lines = {}
+  local maxX = term.getSize() - 11
+  local line = {}
+  local new = false
 
-  local text = string.format("[ACTION]: %s", str)
-  local fg   = string.format(
-    "0444444000%s",
-    string.rep(
-      level == 1 and '8'
-      or level == 2 and '4'
-      or level == 3 and 'e'
-      or '0'
-    )
-  )
-  local bg = string.format(string.rep(' ', 10 + #str))
+  local function insertLine(data)
+    -- pad short text to ensure proper length
+    -- cut long text to ensure proper length
 
-  term.blit(text, fg, bg)
+    lines[#lines + 1] = string.format(string.format("%%%ds", -maxX), table.concat(data, ' ')):sub(1, maxX)
+  end
+
+  -- cut input into words, then combine them into multiple lines for printing
+  for word in str:gmatch("%S+") do
+    new = false
+    line[#line + 1] = word -- insert the word
+
+    -- if the line is now too long
+    if #table.concat(line, ' ') > maxX then
+      -- remove the current word, adding it makes the line too long.
+      line[#line] = nil
+
+      -- add the line to the list
+      insertLine(line)
+
+      -- start the next line, ensuring the line isn't too long
+      if #word > maxX then
+        word = "[removed]"
+      end
+      line = {word}
+      new = true
+    end
+  end
+  if new then
+    insertLine(line)
+  end
+
+  local function createBlit(str, second)
+    return string.format(second and "           %s" or "[UPDATER]: %s", str),
+           string.format(
+             "04444444000%s",
+             string.rep(
+               level == 1 and '8'
+               or level == 2 and '4'
+               or level == 3 and 'e'
+               or '0',
+               #str
+             )
+           ),
+           string.format(string.rep(' ', 11 + #str))
+  end
+
+  for i = 1, #lines do
+    term.blit(createBlit(lines[i], i ~= 1))
+    print()
+  end
 end
 
 -- Check arguments
