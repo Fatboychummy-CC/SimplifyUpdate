@@ -92,7 +92,7 @@ else
 end
 
 -- Check validity.
-action(1, "Checking remote location URL validity.")
+action(1, "Checking remote Simplifile URL validity.")
 local isValid, err = http.checkURL(simplifileRemote)
 if not isValid then
   action(3, string.format("Invalid URL: %s", err))
@@ -100,7 +100,7 @@ if not isValid then
 end
 
 -- Grab all the data.
-action(1, "Downloading.")
+action(1, "Downloading new Simplifile.")
 local h, err, hh = http.get(simplifileRemote)
 if not h then
   action(3, "Failed to download remote.")
