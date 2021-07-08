@@ -218,7 +218,7 @@ local function download()
 end
 local function display()
   while true do
-    action(2, string.format("Downloading... %d%", count() / #simplifileData.files * 100))
+    action(2, string.format("Downloading... %d", count() / #simplifileData.files * 100))
     os.sleep(0.5)
   end
 end
