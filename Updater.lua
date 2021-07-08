@@ -195,7 +195,7 @@ local function download()
     -- wait for http response
     local event, url, httpHandle = os.pullEvent()
 
-    if event == "http_success" and urls[url] then
+    if event == "http_success" and urlLookup[url] then
       -- if succeeded,
       action(1, "Response for", urlLookup[url])
       -- open the file for writing
@@ -218,7 +218,7 @@ local function download()
 end
 local function display()
   while true do
-    action(2, "Downloading... %d%", count() / #simplifileData.files * 100)
+    action(2, string.format("Downloading... %d%", count() / #simplifileData.files * 100))
     os.sleep(0.5)
   end
 end
